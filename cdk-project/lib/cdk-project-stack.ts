@@ -29,7 +29,7 @@ export class CdkProjectStack extends Stack {
       enableDnsHostnames: true,
       enableDnsSupport: true,
       ipProtocol: IpProtocol.IPV4_ONLY,
-      maxAzs: 3,
+      maxAzs: 1,
       natGatewayProvider: NatProvider.gateway(),
       reservedAzs: 0,
       vpcName: `cdk-ec2-vpc-${ENV}`
