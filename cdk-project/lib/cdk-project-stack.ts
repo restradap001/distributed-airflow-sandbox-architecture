@@ -1,4 +1,4 @@
-import { Duration, Stack, StackProps, Tags } from 'aws-cdk-lib';
+import { CfnOutput, CfnParameter, Duration, Stack, StackProps, Tags } from 'aws-cdk-lib';
 import { BlockDeviceVolume, DefaultInstanceTenancy, EbsDeviceVolumeType, Instance, InstanceClass, InstanceInitiatedShutdownBehavior, InstanceSize, InstanceType, IpProtocol, KeyPair, KeyPairFormat, KeyPairType, MachineImage, NatProvider, Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
@@ -7,6 +7,22 @@ import { readFileSync } from 'fs';
 export class CdkProjectStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
     super(scope, id, props);
+
+    const cfnEnvironmentParameter = new CfnParameter(this, 'ENV', {
+      description: 'Environment',
+      default: 'dev',
+      type: 'String',
+      allowedValues: [
+        'dev', 
+        'test', 
+        'prod'
+      ],
+      minLength: 1,
+      maxLength: 4,
+      noEcho: false,
+      constraintDescription: 'Must be one of the allowed values: dev, test, prod'
+    });
+    const ENV = cfnEnvironmentParameter.valueAsString;
 
     const ec2Vpc = new Vpc(this, 'EC2VPC', {
       createInternetGateway: true,
@@ -17,15 +33,13 @@ export class CdkProjectStack extends Stack {
       maxAzs: 3,
       natGatewayProvider: NatProvider.gateway(),
       reservedAzs: 0,
-      vpcName: `cdk-ec2-vpc-${process.env.ENV}`
+      vpcName: `cdk-ec2-vpc-${ENV}`
     });
-
     ec2Vpc.privateSubnets.forEach((subnet, index) => {
-      Tags.of(subnet).add('Name', `cdk-ec2-private-subnet-${index + 1}-${process.env.ENV}`);
+      Tags.of(subnet).add('Name', `cdk-ec2-private-subnet-${index + 1}-${ENV}`);
     });
-
     ec2Vpc.publicSubnets.forEach((subnet, index) => {
-      Tags.of(subnet).add('Name', `cdk-ec2-public-subnet-${index + 1}-${process.env.ENV}`);
+      Tags.of(subnet).add('Name', `cdk-ec2-public-subnet-${index + 1}-${ENV}`);
     });
 
     const ec2SecurityGroup = new SecurityGroup(this, 'EC2SecurityGroup', {
@@ -33,10 +47,9 @@ export class CdkProjectStack extends Stack {
       allowAllOutbound: true,
       description: undefined,
       disableInlineRules: false,
-      securityGroupName: `cdk-ec2-security-group-${process.env.ENV}`,
+      securityGroupName: `cdk-ec2-security-group-${ENV}`,
       vpc: ec2Vpc
     });
-
     ec2SecurityGroup.addIngressRule(Peer.anyIpv4(), Port.SSH, 'Allow SSH access from the internet', false);
     ec2SecurityGroup.addIngressRule(Peer.anyIpv4(), Port.HTTP, 'Allow HTTP access from the internet', false);
     ec2SecurityGroup.addIngressRule(Peer.anyIpv4(), Port.HTTPS, 'Allow HTTPS access from the internet', false);
@@ -46,14 +59,13 @@ export class CdkProjectStack extends Stack {
       description: 'IAM role for EC2 instance',
       maxSessionDuration: Duration.hours(1),
       path: '/',
-      roleName: `cdk-ec2-role-${process.env.ENV}`
+      roleName: `cdk-ec2-role-${ENV}`
     });
-
     iamRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
 
     const ec2KeyPair = new KeyPair(this, 'EC2KeyPair', {
       format: KeyPairFormat.PEM,
-      keyPairName: `cdk-ec2-key-${process.env.ENV}`,
+      keyPairName: `cdk-ec2-key-${ENV}`,
       type: KeyPairType.RSA
     });
 
@@ -65,6 +77,30 @@ export class CdkProjectStack extends Stack {
       owners: ['099720109477'],
       userData: undefined,
       windows: false
+    });
+
+    new CfnOutput(this, 'EC2MACHINEIMAGE__IMAGEID', {
+      description: 'The AMI ID of the image to use.',
+      key: 'imageId',
+      value: ec2MachineImage.getImage(this).imageId
+    });
+
+    new CfnOutput(this, 'EC2KEYPAIR__KEYPAIRNAME', {
+      description: 'The unique name of the key pair.',
+      key: 'keyName',
+      value: ec2KeyPair.keyPairName
+    });
+
+    new CfnOutput(this, 'EC2SECURITYGROUP__SECURITYGROUPID', {
+      description: 'The ID of the security group.',
+      key: 'securityGroupId',
+      value: ec2SecurityGroup.securityGroupId
+    });
+
+    new CfnOutput(this, 'EC2VPC__PUBLICSUBNETS__SUBNETID', {
+      description: 'The subnetId for this particular subnet.',
+      key: 'subnetId',
+      value: ec2Vpc.publicSubnets[0].subnetId
     });
 
     const ec2Instance = new Instance(this, 'EC2Instance', {
@@ -89,7 +125,7 @@ export class CdkProjectStack extends Stack {
       hibernationEnabled: false,
       instanceInitiatedShutdownBehavior: InstanceInitiatedShutdownBehavior.STOP,
       instanceType: InstanceType.of(InstanceClass.R5, InstanceSize.LARGE),
-      instanceName: `cdk-ec2-instance-${process.env.ENV}`,
+      instanceName: `cdk-ec2-instance-${ENV}`,
       keyPair: ec2KeyPair,
       machineImage: ec2MachineImage,
       propagateTagsToVolumeOnCreation: false,
