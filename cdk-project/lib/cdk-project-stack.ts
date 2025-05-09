@@ -17,7 +17,7 @@ export class CdkProjectStack extends Stack {
       maxAzs: 3,
       natGatewayProvider: NatProvider.gateway(),
       reservedAzs: 0,
-      vpcName: `cdk-ec2-vpc-${process.env.ENV}`,
+      vpcName: `cdk-ec2-vpc-${process.env.ENV}`
     });
 
     ec2Vpc.privateSubnets.forEach((subnet, index) => {
@@ -34,7 +34,7 @@ export class CdkProjectStack extends Stack {
       description: undefined,
       disableInlineRules: false,
       securityGroupName: `cdk-ec2-security-group-${process.env.ENV}`,
-      vpc: ec2Vpc,
+      vpc: ec2Vpc
     });
 
     ec2SecurityGroup.addIngressRule(Peer.anyIpv4(), Port.SSH, 'Allow SSH access from the internet', false);
@@ -46,7 +46,7 @@ export class CdkProjectStack extends Stack {
       description: 'IAM role for EC2 instance',
       maxSessionDuration: Duration.hours(1),
       path: '/',
-      roleName: `cdk-ec2-role-${process.env.ENV}`,
+      roleName: `cdk-ec2-role-${process.env.ENV}`
     });
 
     iamRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
@@ -94,7 +94,7 @@ export class CdkProjectStack extends Stack {
       machineImage: ec2MachineImage,
       propagateTagsToVolumeOnCreation: false,
       requireImdsv2: false,
-      resourceSignalTimeout: Duration.minutes(50),
+      resourceSignalTimeout: Duration.minutes(5),
       role: iamRole,
       securityGroup: ec2SecurityGroup,
       sourceDestCheck: true,
@@ -103,7 +103,7 @@ export class CdkProjectStack extends Stack {
       vpcSubnets: {
         onePerAz: false,
         subnets: ec2Vpc.publicSubnets
-      },
+      }
     });
 
     ec2Instance.addUserData(readFileSync('lib/startup.sh', 'utf8'));
