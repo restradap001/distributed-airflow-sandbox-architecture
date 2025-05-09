@@ -1,8 +1,7 @@
 import { CfnOutput, CfnParameter, Duration, Stack, StackProps, Tags } from 'aws-cdk-lib';
-import { BlockDeviceVolume, DefaultInstanceTenancy, EbsDeviceVolumeType, Instance, InstanceClass, InstanceInitiatedShutdownBehavior, InstanceSize, InstanceType, IpProtocol, KeyPair, KeyPairFormat, KeyPairType, MachineImage, NatProvider, Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
+import { DefaultInstanceTenancy, IpProtocol, KeyPair, KeyPairFormat, KeyPairType, MachineImage, NatProvider, Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import { InstanceProfile, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
-import { readFileSync } from 'fs';
 
 export class CdkProjectStack extends Stack {
   constructor(scope: Construct, id: string, props?: StackProps) {
@@ -13,8 +12,8 @@ export class CdkProjectStack extends Stack {
       default: 'dev',
       type: 'String',
       allowedValues: [
-        'dev', 
-        'test', 
+        'dev',
+        'test',
         'prod'
       ],
       minLength: 1,
@@ -115,45 +114,5 @@ export class CdkProjectStack extends Stack {
       value: ec2Vpc.publicSubnets[0].subnetId
     });
 
-    const ec2Instance = new Instance(this, 'EC2Instance', {
-      allowAllIpv6Outbound: false,
-      allowAllOutbound: true,
-      blockDevices: [
-        {
-          deviceName: '/dev/sda1',
-          volume: BlockDeviceVolume.ebs(64, {
-            deleteOnTermination: true,
-            encrypted: false,
-            throughput: 125,
-            volumeType: EbsDeviceVolumeType.GP3
-          }),
-          mappingEnabled: true
-        }
-      ],
-      detailedMonitoring: false,
-      disableApiTermination: false,
-      ebsOptimized: false,
-      enclaveEnabled: false,
-      hibernationEnabled: false,
-      instanceInitiatedShutdownBehavior: InstanceInitiatedShutdownBehavior.STOP,
-      instanceType: InstanceType.of(InstanceClass.R5, InstanceSize.LARGE),
-      instanceName: `cdk-ec2-instance-${ENV}`,
-      keyPair: ec2KeyPair,
-      machineImage: ec2MachineImage,
-      propagateTagsToVolumeOnCreation: false,
-      requireImdsv2: false,
-      resourceSignalTimeout: Duration.minutes(5),
-      role: iamRole,
-      securityGroup: ec2SecurityGroup,
-      sourceDestCheck: true,
-      ssmSessionPermissions: false,
-      vpc: ec2Vpc,
-      vpcSubnets: {
-        onePerAz: false,
-        subnets: ec2Vpc.publicSubnets
-      }
-    });
-
-    ec2Instance.addUserData(readFileSync('lib/startup.sh', 'utf8'));
   }
 }
