@@ -1,6 +1,6 @@
 import { CfnOutput, CfnParameter, Duration, Stack, StackProps, Tags } from 'aws-cdk-lib';
 import { BlockDeviceVolume, DefaultInstanceTenancy, EbsDeviceVolumeType, Instance, InstanceClass, InstanceInitiatedShutdownBehavior, InstanceSize, InstanceType, IpProtocol, KeyPair, KeyPairFormat, KeyPairType, MachineImage, NatProvider, Peer, Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
-import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { InstanceProfile, ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 import { readFileSync } from 'fs';
 
@@ -63,6 +63,12 @@ export class CdkProjectStack extends Stack {
     });
     iamRole.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName('AmazonSSMManagedInstanceCore'));
 
+    const iamInstanceProfile = new InstanceProfile(this, 'InstanceProfile', {
+      instanceProfileName: `cdk-ec2-instance-profile-${ENV}`,
+      role: iamRole,
+      path: '/'
+    });
+
     const ec2KeyPair = new KeyPair(this, 'EC2KeyPair', {
       format: KeyPairFormat.PEM,
       keyPairName: `cdk-ec2-key-${ENV}`,
@@ -77,6 +83,12 @@ export class CdkProjectStack extends Stack {
       owners: ['099720109477'],
       userData: undefined,
       windows: false
+    });
+
+    new CfnOutput(this, 'IAMINSTANCEPROFILE__INSTANCEPROFILEARN', {
+      description: 'Returns the ARN of this InstanceProfile.',
+      key: 'instanceProfileArn',
+      value: iamInstanceProfile.instanceProfileArn
     });
 
     new CfnOutput(this, 'EC2MACHINEIMAGE__IMAGEID', {
