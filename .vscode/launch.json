@@ -7,12 +7,12 @@
         {
             "console": "integratedTerminal",
             "env": {
-                "IAM_INSTANCE_PROFILE_ARN": "arn:aws:iam::637423202052:instance-profile/cdk-ec2-instance-profile-dev",
+                "IAM_INSTANCE_PROFILE_ARN": "arn:aws:iam::381492074651:instance-profile/cdk-ec2-instance-profile-dev",
                 "IMAGE_ID": "ami-0b529f3487c2c0e7f",
                 "INSTANCE_TYPE": "r5.large",
                 "KEY_NAME": "cdk-ec2-key-dev",
-                "SECURITY_GROUP": "sg-06a2f91d6477c8ee0",
-                "SUBNET_ID": "subnet-09e52f4bd1fab5d65",
+                "SECURITY_GROUP": "sg-04c99dccee80195c0",
+                "SUBNET_ID": "subnet-06ce7545b2f2e60ef",
                 "ENV": "dev"
             },
             "name": "index.js",
