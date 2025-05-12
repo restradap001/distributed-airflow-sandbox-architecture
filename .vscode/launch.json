@@ -9,7 +9,7 @@
             "env": {
                 "IAM_INSTANCE_PROFILE_ARN": "arn:aws:iam::381492074651:instance-profile/cdk-ec2-instance-profile-dev",
                 "IMAGE_ID": "ami-0b529f3487c2c0e7f",
-                "INSTANCE_TYPE": "r5.large",
+                "INSTANCE_TYPE": "r5.xlarge",
                 "KEY_NAME": "cdk-ec2-key-dev",
                 "SECURITY_GROUP": "sg-04c99dccee80195c0",
                 "SUBNET_ID": "subnet-06ce7545b2f2e60ef",

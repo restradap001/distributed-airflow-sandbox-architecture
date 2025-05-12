@@ -17,6 +17,14 @@ sudo systemctl enable --now amazon-ssm-agent
 sudo apt install -y python3-pip
 pip3 install aws-cfn-bootstrap
 
+# Install Python 3.9
+sudo apt install -y software-properties-common
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt update
+sudo apt install -y python3.9 python3.9-venv python3.9-distutils
+sudo update-alternatives --install /usr/bin/python python /usr/bin/python3.9 1
+sudo update-alternatives --set python /usr/bin/python3.9
+
 # Install Docker
 sudo apt install -y docker.io
 sudo systemctl enable --now docker

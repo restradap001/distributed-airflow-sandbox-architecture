@@ -15,7 +15,7 @@ export async function main() {
 
         const userData = readFileSync('sdk-project/startup.sh', 'utf8');
         const instanceNames = [
-            `sdk-ec2-instance-restrada-${ENV}`
+            `sdk-ec2-instance-${ENV}`
         ];
 
         for (const name of instanceNames) {
