@@ -67,6 +67,7 @@ for email in "${user_emails[@]}"; do
     if ! id "$username" &>/dev/null; then
         sudo adduser --disabled-password --gecos "" "$username"
         sudo usermod -aG docker "$username"
+        sudo usermod -aG restrada "$username"
         sudo usermod -aG root "$username"
         sudo -u "$username" mkdir -p /home/"$username"/.ssh
         sudo -u "$username" chmod 700 /home/"$username"/.ssh
@@ -79,6 +80,6 @@ done
 
 # Clone the repository into restrada user's home directory if not already present
 if [ ! -d /home/restrada/apache-airflow ]; then
-    sudo -u restrada git clone --single-branch --branch dev  https://github.com/raep-enki/apache-airflow.git /home/restrada/apache-airflow
+    sudo -u restrada git clone --single-branch --branch dev https://github.com/raep-enki/apache-airflow.git /home/restrada/apache-airflow
     sudo chown -R restrada:root /home/restrada/apache-airflow
 fi
