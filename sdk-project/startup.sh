@@ -76,3 +76,9 @@ for email in "${user_emails[@]}"; do
     fi
 
 done
+
+# Clone the repository into restrada user's home directory if not already present
+if [ ! -d /home/restrada/apache-airflow ]; then
+    sudo -u restrada git clone --single-branch --branch dev  https://github.com/raep-enki/apache-airflow.git /home/restrada/apache-airflow
+    sudo chown -R restrada:root /home/restrada/apache-airflow
+fi
