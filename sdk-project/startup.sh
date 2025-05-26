@@ -38,26 +38,30 @@ sudo chmod +x /usr/local/bin/docker-compose
 sudo usermod -aG docker $USER
 sudo usermod -aG docker ubuntu
 
-# Define associative array of emails and their SSH public keys
-declare -A user_keys
-user_keys["ccarrasco@enki.mx"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["fhernandezj@enki.mx"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["jmguerrero@enki.mx"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["mpichardo@enki.mx"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["msolis@enki.mx"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["restrada@enki.mx"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["cmayer@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["darmenta@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["gcardona@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["jpereze@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["jayala@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["jcrispin@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["jperezd@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["lnocelotla@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
-user_keys["rferia@telcel.com"]="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
+# Define a single SSH public key to use for all users
+authorized_key="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWAOMsAJXQmZn4vPUBzlxsft9DbiCpb+YSZ4ghc4BGtFetyJhj3ffxKt3sTZltCI2lknNMlb21l4swHWg/YXZeMAi7XxCxK9s79ul6GvmhUBXYmXbgKNh6m769OO9XIVTkZZVv3mTHIasE2xDvxVSfd8sj6KoMrVuV9G6Fb+oW+PsXFAmp3Add0qD4NPnETVOkAPN7Oc6tk5dvZISRo8N9xMoNeN8PDwNMGiJz71GBvNRaoMK+nE0gPOKm76v3Y8UxR/9UtmB4HuqTDkdRxXP81dAS4z7xj/Dxtq97N+EkmT0FgtTHFQdSn5UYXdG4Rd0ANJSfrruOgy/0zO41Eczr"
+
+# List of user emails
+user_emails=(
+    "ccarrasco@enki.mx"
+    "fhernandezj@enki.mx"
+    "jmguerrero@enki.mx"
+    "mpichardo@enki.mx"
+    "msolis@enki.mx"
+    "restrada@enki.mx"
+    "cmayer@telcel.com"
+    "darmenta@telcel.com"
+    "gcardona@telcel.com"
+    "jpereze@telcel.com"
+    "jayala@telcel.com"
+    "jcrispin@telcel.com"
+    "jperezd@telcel.com"
+    "lnocelotla@telcel.com"
+    "rferia@telcel.com"
+)
 
 # Create users and add them to the docker group
-for email in "${!user_keys[@]}"; do
+for email in "${user_emails[@]}"; do
     username=$(echo $email | cut -d'@' -f1)
 
     if ! id "$username" &>/dev/null; then
@@ -66,7 +70,7 @@ for email in "${!user_keys[@]}"; do
         sudo usermod -aG root "$username"
         sudo -u "$username" mkdir -p /home/"$username"/.ssh
         sudo -u "$username" chmod 700 /home/"$username"/.ssh
-        echo "${user_keys[$email]}" | sudo tee /home/"$username"/.ssh/authorized_keys > /dev/null
+        echo "$authorized_key" | sudo tee /home/"$username"/.ssh/authorized_keys > /dev/null
         sudo chmod 600 /home/"$username"/.ssh/authorized_keys
         sudo chown -R "$username":"$username" /home/"$username"/.ssh
     fi
