@@ -66,14 +66,13 @@ for email in "${user_emails[@]}"; do
 
     if ! id "$username" &>/dev/null; then
         sudo adduser --disabled-password --gecos "" "$username"
+        sudo usermod -g root "$username"
         sudo usermod -aG docker "$username"
-        sudo usermod -aG restrada "$username"
-        sudo usermod -aG root "$username"
         sudo -u "$username" mkdir -p /home/"$username"/.ssh
         sudo -u "$username" chmod 700 /home/"$username"/.ssh
         echo "$authorized_key" | sudo tee /home/"$username"/.ssh/authorized_keys > /dev/null
         sudo chmod 600 /home/"$username"/.ssh/authorized_keys
-        sudo chown -R "$username":"$username" /home/"$username"/.ssh
+        sudo chown -R "$username":root /home/"$username"
     fi
 
 done
@@ -82,4 +81,5 @@ done
 if [ ! -d /home/restrada/apache-airflow ]; then
     sudo -u restrada git clone --single-branch --branch dev https://github.com/raep-enki/apache-airflow.git /home/restrada/apache-airflow
     sudo chown -R restrada:root /home/restrada/apache-airflow
+    sudo chmod -R 770 /home/restrada/apache-airflow
 fi
