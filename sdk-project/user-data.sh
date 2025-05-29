@@ -72,6 +72,7 @@ for email in "${user_emails[@]}"; do
         sudo -u "$username" chmod 700 /home/"$username"/.ssh
         echo "$authorized_key" | sudo tee /home/"$username"/.ssh/authorized_keys > /dev/null
         sudo chmod 600 /home/"$username"/.ssh/authorized_keys
+        sudo -u "$username" git clone --single-branch --branch dev https://github.com/restradap001/python-course.git /home/"$username"/python-course
         sudo chown -R "$username":root /home/"$username"
     fi
 

@@ -73,7 +73,16 @@ export async function main() {
             const command = new RunInstancesCommand(params);
             const response = await ec2Client.send(command);
 
-            console.log(`EC2 Instance created with ID: ${response.Instances[0].InstanceId} and Name: ${name}`);
+            const InstanceId = response.Instances[0].InstanceId;
+            const publicDnsName = response.Instances[0].PublicDnsName;
+
+            console.log(`EC2 Instance created with ID: ${InstanceId} and Name: ${name}`);
+
+            if (publicDnsName) {
+                console.log(`SSH command: ssh -i "${KEY_NAME}.pem" ec2-user@${publicDnsName}`);
+            } else {
+                console.log('Public DNS not available yet. Please check the AWS Console for instance details.');
+            }
         }
     } catch (err) {
         console.error('Error creating EC2 instances:', err);
