@@ -13,7 +13,7 @@ export async function main() {
     try {
         const ec2Client = new EC2Client({});
 
-        const userData = readFileSync('sdk-project/startup.sh', 'utf8');
+        const userData = readFileSync('sdk-project/user-data.sh', 'utf8');
         const instanceNames = [
             `sdk-ec2-instance-${ENV}`
         ];
